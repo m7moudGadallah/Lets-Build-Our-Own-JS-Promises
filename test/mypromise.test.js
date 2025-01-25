@@ -125,4 +125,88 @@ describe('Test MyPromise', () => {
         });
     });
   });
+
+  describe('Static Methods', () => {
+    it('MyPromise.resolve should resolve with given value', () => {
+      return MyPromise.resolve(42).then((value) => {
+        expect(value).toBe(42);
+      });
+    });
+
+    it('MyPromise.reject should reject with given reason', () => {
+      return MyPromise.reject('reason').catch((reason) => {
+        expect(reason).toBe('reason');
+      });
+    });
+
+    it('MyPromise.all should resolve when all promises resolve', () => {
+      const promises = [
+        MyPromise.resolve(1),
+        MyPromise.resolve(2),
+        MyPromise.resolve(3),
+      ];
+
+      return MyPromise.all(promises).then((values) => {
+        expect(values).toEqual([1, 2, 3]);
+      });
+    });
+
+    it('MyPromise.all should reject if one promise rejects', () => {
+      const promises = [
+        MyPromise.resolve(1),
+        MyPromise.reject('error'),
+        MyPromise.resolve(3),
+      ];
+
+      return MyPromise.all(promises).catch((reason) => {
+        expect(reason).toBe('error');
+      });
+    });
+
+    it('MyPromise.any should resolve with the first fulfilled value', () => {
+      const promises = [
+        MyPromise.reject('error'),
+        MyPromise.resolve(42),
+        MyPromise.resolve(3),
+      ];
+
+      return MyPromise.any(promises).then((value) => {
+        expect(value).toBe(42);
+      });
+    });
+
+    it('MyPromise.any should reject if all promises reject', () => {
+      const promises = [MyPromise.reject('error1'), MyPromise.reject('error2')];
+
+      return MyPromise.any(promises).catch((error) => {
+        expect(error).toBeInstanceOf(AggregateError);
+        expect(error.errors).toEqual(['error1', 'error2']);
+      });
+    });
+
+    it('MyPromise.race should resolve or reject with the first settled promise', () => {
+      return MyPromise.race([
+        MyPromise.reject('error'),
+        MyPromise.resolve(1),
+      ]).catch((reason) => {
+        expect(reason).toBe('error');
+      });
+    });
+
+    it('MyPromise.allSettled should resolve with results of all promises', () => {
+      const promises = [
+        MyPromise.resolve(1),
+        MyPromise.reject('error'),
+        MyPromise.resolve(3),
+      ];
+
+      return MyPromise.allSettled(promises).then((results) => {
+        expect(results).toEqual([
+          { status: 'fulfilled', value: 1 },
+          { status: 'rejected', reason: 'error' },
+          { status: 'fulfilled', value: 3 },
+        ]);
+      });
+    });
+  });
 });
