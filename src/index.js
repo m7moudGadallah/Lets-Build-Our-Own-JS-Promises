@@ -144,7 +144,7 @@ class MyPromise {
    * @returns {MyPromise}
    */
   catch(onRejected) {
-    throw new Error('Method not implemented');
+    return this.then(null, onRejected);
   }
 
   /**
