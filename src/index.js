@@ -174,7 +174,10 @@ class MyPromise {
    * @returns {MyPromise}
    */
   static reject(reason) {
-    throw new Error('Method not implemented');
+    if (reason && reason instanceof MyPromise) {
+      return reason;
+    }
+    return new MyPromise((_, reject) => reject(reason));
   }
 
   /**
