@@ -4,19 +4,51 @@
 
 ## Introduction
 
-Promises are a way to handle asynchronous operations in JS. so it is important to understand how they work and for that reason, I decide to implement my own version of promises, to deeply understand how they work.
+Promises are a way to handle asynchronous operations in JS. To truly understand how they work, I decided to implement my own version of promises.
 
 ## Design
 
+```js
+class MyPromise {
+  // Constructor and private fields
+  #state;                // Current state of the promise (pending, fulfilled, rejected)
+  #value;                // Resolved value of the promise
+  #reason;               // Reason for rejection
+  #fulfillReactions;     // List of fulfill callbacks
+  #rejectReactions;      // List of reject callbacks
+
+  constructor(executor)  // Accepts a function to handle resolve and reject logic
+
+  // Private methods
+  get #isSettled();      // Checks if the promise is settled
+  #fireReactions();      // Executes the appropriate callbacks based on state
+  #onResolve(value);     // Handles resolve logic
+  #onReject(reason);     // Handles reject logic
+
+  // Public instance methods
+  then(onFulfilled, onRejected); // Registers fulfillment and rejection handlers
+  catch(onRejected);             // Shortcut for handling rejection
+  finally(onFinally);            // Executes logic regardless of fulfillment/rejection
+
+  // Public static methods
+  static resolve(value);         // Creates a fulfilled promise with a given value
+  static reject(reason);         // Creates a rejected promise with a given reason
+  static all(promises);          // Resolves when all promises are fulfilled, or rejects on the first rejection
+  static any(promises);          // Resolves with the first fulfilled promise or rejects when all are rejected
+  static race(promises);         // Resolves or rejects with the first settled promise
+  static allSettled(promises);   // Resolves when all promises settle (fulfilled or rejected)
+}
+```
+
 ## File Structure
 
-I rely on simple and easy-to-understand file structure, as shown below:
+The project is organized for simplicity:
 
-- `src` folder contains the source code of the project.
-  - `src/index.js` is the entry point of the project which contains `MyPromise` class.
-- `test` folder contains the test cases for the project.
-- `.prettierrc` file contains the configuration for Prettier.
-- `package.json` file contains the metadata of the project.
+- `src` contains the source code.
+- `src/index.js` holds the MyPromise class.
+- `test` contains the test cases.
+- `.prettierrc` configures Prettier.
+- `package.json` manages project metadata.
 
 ## Installation
 
@@ -99,7 +131,12 @@ Enjoy using the other methods of the `MyPromise` class!
 
 ## Contributions
 
-I will be happy to receive any contributions from anyone who is interested in this repository. You can contribute by adding new features, fixing bugs, improving the documentation, or suggesting new ideas.
+Contributions are welcome! You can:
+
+- Add features
+- Fix bugs
+- Improve documentation
+- Suggest ideas
 
 ## License
 
