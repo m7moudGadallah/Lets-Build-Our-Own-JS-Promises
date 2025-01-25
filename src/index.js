@@ -162,7 +162,10 @@ class MyPromise {
    * @returns {MyPromise}
    */
   static resolve(value) {
-    throw new Error('Method not implemented');
+    if (value && value instanceof MyPromise) {
+      return value;
+    }
+    return new MyPromise((resolve) => resolve(value));
   }
 
   /**
