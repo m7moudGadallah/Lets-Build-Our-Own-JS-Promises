@@ -180,8 +180,43 @@ class MyPromise {
    * @returns {MyPromise}
    */
   static all(promises) {
-    throw new Error('Method not implemented');
+    return new MyPromise((resolve, reject) => {
+      if (!Array.isArray(promises)) {
+        reject(new TypeError('Input must be an array of promises'));
+        return;
+      }
+
+      let pendingPromisesCount = promises.length;
+      let resultValues = new Array(promises.length);
+
+      if (pendingPromisesCount === 0) {
+        resolve(resultValues);
+        return;
+      }
+
+      promises.forEach((promise, index) => {
+        const currPromise =
+          promise && typeof promise.then === 'function'
+            ? promise
+            : MyPromise.resolve(promise);
+
+        currPromise.then(
+          (value) => {
+            resultValues[index] = value;
+            pendingPromisesCount--;
+
+            if (pendingPromisesCount === 0) {
+              resolve(resultValues);
+            }
+          },
+          (reason) => {
+            reject(reason);
+          },
+        );
+      });
+    });
   }
+
   /**
    * Create a promise that is resolved when any of the given promises are resolved
    * @param {MyPromise[]} promises
