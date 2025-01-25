@@ -167,7 +167,20 @@ class MyPromise {
    * @returns {MyPromise}
    */
   finally(onFinally) {
-    throw new Error('Method not implemented');
+    return this.then(
+      (value) => {
+        if (onFinally && typeof onFinally == 'function') {
+          onFinally();
+        }
+        return value;
+      },
+      (reason) => {
+        if (onFinally && typeof onFinally == 'function') {
+          onFinally();
+        }
+        throw reason;
+      },
+    );
   }
 
   /**
