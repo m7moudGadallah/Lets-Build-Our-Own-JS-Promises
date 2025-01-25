@@ -79,9 +79,16 @@ class MyPromise {
    * @returns {void}
    */
   #onReject(reason) {
-    throw new Error('Method not implemented');
-  }
+    // If the promise is already settled, return
+    if (this.#isSettled) return;
 
+    // Reject the promise with the reason
+    queueMicrotask(() => {
+      this.#state = PromiseState.Rejected;
+      this.#reason = reason;
+      this.#fireReactions();
+    });
+  }
   /**
    * Register the fulfill and reject reactions
    * @param {Function} onFulfilled
