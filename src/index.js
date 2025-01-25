@@ -15,7 +15,21 @@ class MyPromise {
    * @param {(resolve:(value:any)=>void), reject:(reason:any)=>void)=>void} executor
    */
   constructor(executor) {
-    throw new Error('Method not implemented');
+    this.#state = PromiseState.Pending;
+    this.#value = undefined;
+    this.#reason = undefined;
+    this.#fulfillReactions = [];
+    this.#rejectReactions = [];
+
+    if (!executor || typeof executor != 'function') {
+      throw new TypeError('Executor must be a function');
+    }
+
+    try {
+      executor(this.#onResolve.bind(this), this.#onReject.bind(this));
+    } catch (error) {
+      this.#onReject(error);
+    }
   }
 
   /**
