@@ -331,7 +331,40 @@ class MyPromise {
    * @param {MyPromise[]} promises
    */
   static allSettled(promises) {
-    throw new Error('Method not implemented');
+    return new MyPromise((resolve, reject) => {
+      if (!Array.isArray(promises)) {
+        reject(new TypeError('Input must be an array of promises'));
+        return;
+      }
+
+      let pendingPromisesCount = promises.length;
+      let results = new Array(promises.length);
+
+      if (pendingPromisesCount === 0) {
+        resolve(results);
+        return;
+      }
+
+      promises.forEach((promise, index) => {
+        const currPromise =
+          promise && typeof promise.then === 'function'
+            ? promise
+            : MyPromise.resolve(promise);
+
+        currPromise
+          .then(
+            (value) => (results[index] = { status: 'fulfilled', value }),
+            (reason) => (results[index] = { status: 'rejected', reason }),
+          )
+          .finally(() => {
+            pendingPromisesCount--;
+
+            if (pendingPromisesCount === 0) {
+              resolve(results);
+            }
+          });
+      });
+    });
   }
 }
 
