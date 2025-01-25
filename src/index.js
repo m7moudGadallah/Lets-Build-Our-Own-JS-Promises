@@ -89,6 +89,7 @@ class MyPromise {
       this.#fireReactions();
     });
   }
+
   /**
    * Register the fulfill and reject reactions
    * @param {Function} onFulfilled
@@ -96,7 +97,45 @@ class MyPromise {
    * @returns {MyPromise}
    */
   then(onFulfilled, onRejected) {
-    throw new Error('Method not implemented');
+    return new MyPromise((resolve, reject) => {
+      const fulfillReaction = (value) => {
+        if (onFulfilled && typeof onFulfilled == 'function') {
+          try {
+            const result = onFulfilled(value);
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        } else {
+          resolve(value);
+        }
+      };
+
+      const rejectReaction = (reason) => {
+        if (onRejected && typeof onRejected == 'function') {
+          try {
+            const result = onRejected(reason);
+            resolve(result);
+          } catch (error) {
+            reject(error);
+          }
+        } else {
+          reject(reason);
+        }
+      };
+
+      if (this.#state == PromiseState.Pending) {
+        // Register the fulfill and reject reactions
+        this.#fulfillReactions.push(fulfillReaction);
+        this.#rejectReactions.push(rejectReaction);
+      } else if (this.#state == PromiseState.Fulfilled) {
+        // Register the fulfill reaction in the microtask queue
+        queueMicrotask(() => fulfillReaction(this.#value));
+      } else if (this.#state == PromiseState.Rejected) {
+        // Register the reject reaction in the microtask queue
+        queueMicrotask(() => rejectReaction(this.#reason));
+      }
+    });
   }
 
   /**
