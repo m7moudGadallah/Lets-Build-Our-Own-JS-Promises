@@ -140,6 +140,4 @@ Contributions are welcome! You can:
 
 ## License
 
-<!-- TODO: Add project license -->
-
-<!-- This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details. -->
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
