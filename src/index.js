@@ -31,7 +31,23 @@ class MyPromise {
    * @returns {void}
    */
   #fireReactions() {
-    throw new Error('Method not implemented');
+    if (this.#state == PromiseState.Fulfilled) {
+      // Run the fulfill reactions
+      this.#fulfillReactions.forEach((reaction) => {
+        reaction(this.#value);
+      });
+
+      // Clear the fulfill reactions
+      this.#fulfillReactions = [];
+    } else if (this.#state == PromiseState.Rejected) {
+      // Run the reject reactions
+      this.#rejectReactions.forEach((reaction) => {
+        reaction(this.#reason);
+      });
+
+      // Clear the reject reactions
+      this.#rejectReactions = [];
+    }
   }
 
   /**
