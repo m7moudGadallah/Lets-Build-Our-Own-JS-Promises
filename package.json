@@ -1,0 +1,21 @@
+{
+  "name": "build-our-own-js-promises",
+  "version": "1.0.0",
+  "description": "side project to implement my own version of promises",
+  "main": "src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest",
+    "start": "node src/index.js"
+  },
+  "author": "m7moudGadallah",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.10",
+    "jest": "^29.7.0",
+    "prettier": "^3.4.2"
+  }
+}
