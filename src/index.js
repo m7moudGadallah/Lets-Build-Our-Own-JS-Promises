@@ -56,7 +56,21 @@ class MyPromise {
    * @returns {void}
    */
   #onResolve(value) {
-    throw new Error('Method not implemented');
+    // If the promise is already settled, return
+    if (this.#isSettled) return;
+
+    // If the value is a promise, wait for it to resolve
+    if (value && value?.then && typeof value.then === 'function') {
+      value.then(this.#onResolve.bind(this), this.#onReject.bind(this));
+      return;
+    }
+
+    // If the value is not a promise, resolve the promise with the value
+    queueMicrotask(() => {
+      this.#state = PromiseState.Fulfilled;
+      this.#value = value;
+      this.#fireReactions();
+    });
   }
 
   /**
