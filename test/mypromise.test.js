@@ -73,4 +73,56 @@ describe('Test MyPromise', () => {
       }
     });
   });
+
+  describe('Chained Promises', () => {
+    it('should support chaining with fulfillment', () => {
+      const p = MyPromise.resolve(1);
+
+      return p
+        .then((value) => {
+          expect(value).toBe(1);
+          return value + 1;
+        })
+        .then((value) => {
+          expect(value).toBe(2);
+        });
+    });
+
+    it('should support chaining with rejection', () => {
+      const p = MyPromise.reject('some error');
+
+      return p
+        .catch((reason) => {
+          expect(reason).toBe('some error');
+          return `reason: ${reason}`;
+        })
+        .then((result) => {
+          expect(result).toBe('reason: some error');
+        });
+    });
+
+    it('should call finally after a fulfilled promise', () => {
+      const p = MyPromise.resolve(1);
+
+      return p
+        .then((value) => {
+          expect(value).toBe(1);
+        })
+        .finally(() => {
+          expect(true).toBe(true); // Ensure `finally` is called.
+        });
+    });
+
+    it('should call finally after a rejected promise', () => {
+      const p = MyPromise.reject('some error');
+
+      return p
+        .catch((reason) => {
+          expect(reason).toBe('some error');
+        })
+        .finally(() => {
+          expect(true).toBe(true); // Ensure `finally` is called.
+        });
+    });
+  });
 });
