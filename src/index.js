@@ -23,7 +23,7 @@ class MyPromise {
    * @returns {boolean}
    */
   get #isSettled() {
-    throw new Error('Method not implemented');
+    return this.#state !== PromiseState.Pending;
   }
 
   /**
