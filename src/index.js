@@ -304,7 +304,26 @@ class MyPromise {
    * @returns {MyPromise}
    */
   static race(promises) {
-    throw new Error('Method not implemented');
+    return new MyPromise((resolve, reject) => {
+      if (!Array.isArray(promises)) {
+        reject(new TypeError('Input must be an array of promises'));
+        return;
+      }
+
+      if (promises.length === 0) {
+        resolve(); // Resolve with `undefined` if no promises are provided.
+        return;
+      }
+
+      promises.forEach((promise) => {
+        const currPromise =
+          promise && typeof promise.then === 'function'
+            ? promise
+            : MyPromise.resolve(promise);
+
+        currPromise.then(resolve, reject);
+      });
+    });
   }
 
   /**
